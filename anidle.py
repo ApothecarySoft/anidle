@@ -1,8 +1,11 @@
 import argparse
 from dataclasses import dataclass
+import os
 import random
 from apitools import fetchDataForMedia, fetchDataForType
 from enum import Enum
+
+from cachefiles import latestValidUserFileOrNew, loadDataFromFile
 
 
 class Proximity(Enum):
@@ -73,7 +76,12 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-userListIds = fetchDataForType("ANIME", args.userName)
+userFile = latestValidUserFileOrNew(userName=args.userName, mediaType="ANIME", clean=True)
+
+if not os.path.exists(userFile):
+    userListIds = fetchDataForType("ANIME", args.userName)
+else:
+    userListIds = loadDataFromFile(userFile)
 
 secretMedia = fetchDataForMedia(random.choice(userListIds))
 

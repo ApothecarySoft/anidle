@@ -31,7 +31,7 @@ def _sanitizeUserName(userName: str):
     return re.sub(r"[^a-zA-Z0-9_-]", "", userName)
 
 
-def latestValidUserFileOrNew(userName: str, clean=True):
+def latestValidUserFileOrNew(userName: str, mediaType: str = None, clean=True):
     fileNames = glob(f"{_sanitizeUserName(userName=userName)}-*-list.json")
     latestValidFileName = None
     latestValidDateStamp = None
@@ -47,7 +47,7 @@ def latestValidUserFileOrNew(userName: str, clean=True):
                 os.remove(fileName)
         elif clean:
             os.remove(fileName)
-    return latestValidFileName or _generateDataFileNameForUser(userName=userName)
+    return latestValidFileName or _generateDataFileNameForUser(userName=userName, mediaType=mediaType)
 
 
 def _extractDateStampFromFileName(fileName):
